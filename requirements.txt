@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+requests
+dnspython
+python-dotenv
+python-multipart

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>PICHOSdefender Scanner</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+
+        <div class="logo">
+            <button
+                id="sidebarToggle"
+                class="menu-toggle"
+                type="button"
+                aria-label="Abrir menu de navegação"
+                aria-expanded="false"
+                aria-controls="sidebar"
+            >
+                <span aria-hidden="true">☰</span>
+            </button>
+            <img
+                class="logo-image"
+                src="/static/Cute%20Blob%20Creature%20Doodle.png"
+                alt="Mascote do LOS PICHOS DEFENDER"
+            >
+            <span class="logo-name">LOS<span>DEFENDER</span></span>
+        </div>
+
+    </header>
+
+
+    <div id="appShell" class="app-shell">
+        <aside id="sidebar" class="sidebar hidden" aria-label="Navegação principal">
+            <p class="sidebar-label">FERRAMENTAS</p>
+            <button class="sidebar-link active" type="button" data-view="scannerView" aria-current="page">
+                <span aria-hidden="true">⌕</span>
+                <span>Scanner</span>
+            </button>
+            <button class="sidebar-link" type="button" data-view="assistantView">
+                <span aria-hidden="true">✦</span>
+                <span>IA de segurança</span>
+            </button>
+            <button class="sidebar-link" type="button" data-view="helpView">
+                <span aria-hidden="true">ⓘ</span>
+                <span>Central de ajuda</span>
+            </button>
+        </aside>
+
+        <main class="main-content">
+        <section id="scannerView" class="app-view" data-view-panel>
+          <section class="hero">
+
+            <h1>
+                LOS PICHOS DEFENDER
+            </h1>
+
+            <p>
+                Analise links e arquivos com os mecanismos do Los Pichos Defender.
+            </p>
+
+            <div class="scanner-tabs" role="tablist" aria-label="Tipo de análise">
+                <button
+                    id="linkTab"
+                    class="scanner-tab active"
+                    type="button"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="linkPanel"
+                    data-scan-mode="link"
+                >
+                    Link
+                </button>
+                <button
+                    id="fileTab"
+                    class="scanner-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="filePanel"
+                    data-scan-mode="file"
+                >
+                    Arquivo
+                </button>
+            </div>
+
+            <div id="linkPanel" class="scan-panel" role="tabpanel" aria-labelledby="linkTab">
+                <div class="search-box">
+
+                    <input
+                        id="urlInput"
+                        type="text"
+                        placeholder="https://example.com"
+                        autocomplete="off"
+                    >
+
+                    <button id="scanButton" type="button">
+                        SCAN LINK
+                    </button>
+
+                </div>
+            </div>
+
+            <div id="filePanel" class="scan-panel hidden" role="tabpanel" aria-labelledby="fileTab">
+                <label class="file-picker" for="fileInput">
+                    <span id="fileName">Escolha um arquivo para analisar</span>
+                    <span class="file-picker-action">ESCOLHER</span>
+                    <input id="fileInput" type="file">
+                </label>
+                <p class="file-limit">Tamanho máximo: 32 MB</p>
+                <p class="privacy-notice">
+                    O arquivo será enviado ao banco de dados do Los Pichos Defender e pode ser compartilhado com a comunidade. Não envie arquivos confidenciais.
+                </p>
+                <button id="fileScanButton" class="file-scan-button" type="button" disabled>
+                    ANALISAR ARQUIVO
+                </button>
+            </div>
+
+            <div id="error"></div>
+            <p class="network-disclosure">
+                Ao analisar um link, o IP público encontrado é consultado no serviço externo ipwho.is para estimar a região e a hospedagem. O mapa usa o OpenStreetMap.
+            </p>
+
+        </section>
+
+
+        <section
+            id="loading"
+            class="loading hidden"
+        >
+
+            <div class="spinner"></div>
+
+            <h2 id="loadingTitle">
+                Verificando os mecanismos de segurança...
+            </h2>
+
+            <p id="loadingMessage">
+                O resultado será exibido quando a análise do VirusTotal terminar.
+            </p>
+
+        </section>
+
+
+        <section
+            id="results"
+            class="results hidden"
+        >
+
+            <div class="result-header">
+
+                <div>
+
+                    <small>
+                        RESULTADO DA ANALISE PARA:
+                    </small>
+
+                    <h2 id="scannedUrl">
+                        —
+                    </h2>
+
+                </div>
+
+                <div
+                    id="overallStatus"
+                    class="overall clean"
+                >
+                    CLEAN
+                </div>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat">
+
+                    <strong id="cleanCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Seguros
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong id="warningCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Suspeitos
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong id="dangerCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Maliciosos
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong id="totalCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Motores
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="engine-list" id="engineList"></div>
+            <section id="networkInfo" class="network-info hidden" aria-live="polite">
+                <div class="network-heading">
+                    <div>
+                        <p class="section-eyebrow">INFRAESTRUTURA DO DOMÍNIO</p>
+                        <h3>Endereços IP e hospedagem</h3>
+                    </div>
+                    <span class="network-badge">Dados aproximados</span>
+                </div>
+                <div id="networkIpList" class="network-ip-list"></div>
+                <div id="networkMapContainer" class="network-map-container hidden">
+                    <iframe id="networkMap" title="Mapa aproximado da hospedagem do site" loading="lazy" referrerpolicy="no-referrer"></iframe>
+                    <p id="networkMapCaption" class="network-map-caption"></p>
+                </div>
+                <p id="networkNotice" class="network-notice"></p>
+            </section>
+
+        </section>
+        </section>
+
+        <section id="assistantView" class="app-view tool-view hidden" data-view-panel>
+            <div class="tool-header">
+                <p class="section-eyebrow">ORIENTAÇÃO DEFENSIVA</p>
+                <h1>IA de cibersegurança</h1>
+                <p>Conte o que aconteceu, descreva uma mensagem suspeita ou pergunte sobre um link. Você receberá próximos passos práticos e seguros. A IA não verifica links em tempo real; use o Scanner para consultar a reputação.</p>
+            </div>
+            <div class="privacy-notice assistant-privacy">
+                Não envie senhas, códigos de autenticação, documentos ou dados bancários. As mensagens serão processadas pelo provedor de IA configurado pelo responsável do site.
+            </div>
+            <div id="chatMessages" class="chat-messages" role="log" aria-live="polite">
+                <div class="chat-message assistant-message">Olá! Posso ajudar você a avaliar sinais de golpe e sugerir medidas defensivas. O que aconteceu?</div>
+            </div>
+            <form id="chatForm" class="chat-form">
+                <label class="sr-only" for="chatInput">Sua dúvida de cibersegurança</label>
+                <textarea id="chatInput" maxlength="2000" rows="3" placeholder="Descreva sua dúvida (máximo de 2000 caracteres)"></textarea>
+                <button id="chatSendButton" type="submit">Enviar pergunta</button>
+            </form>
+            <p id="chatError" class="tool-error" role="alert"></p>
+        </section>
+
+        <section id="helpView" class="app-view tool-view hidden" data-view-panel>
+            <div class="tool-header">
+                <p class="section-eyebrow">APOIO E PRÓXIMOS PASSOS</p>
+                <h1>Central de ajuda</h1>
+                <p>Este site não tem atendente humano integrado. Para falar com alguém, use os canais oficiais abaixo e confirme os contatos no site oficial da instituição.</p>
+            </div>
+            <div class="help-grid">
+                <article class="help-card urgent-card">
+                    <span class="help-icon" aria-hidden="true">!</span>
+                    <h2>Risco imediato</h2>
+                    <p>Se houver perigo imediato para você ou outra pessoa no Brasil, ligue para a Polícia Militar pelo <strong>190</strong>.</p>
+                    <a href="tel:190">Ligar para 190</a>
+                </article>
+                <article class="help-card">
+                    <span class="help-icon" aria-hidden="true">⌂</span>
+                    <h2>Fraude financeira</h2>
+                    <p>Se informou dados ou fez um pagamento, contate imediatamente seu banco pelo aplicativo ou pelo número oficial no cartão.</p>
+                    <a href="https://www.gov.br/pt-br/servicos/registrar-uma-reclamacao-no-consumidor-gov-br" target="_blank" rel="noopener noreferrer">Acessar Consumidor.gov.br</a>
+                </article>
+                <article class="help-card">
+                    <span class="help-icon" aria-hidden="true">⌘</span>
+                    <h2>Incidente ou golpe online</h2>
+                    <p>Veja orientações de segurança e como reportar incidentes ao CERT.br, equipe nacional de resposta a incidentes.</p>
+                    <a href="https://www.cert.br/contato/" target="_blank" rel="noopener noreferrer">Contato do CERT.br</a>
+                    <a href="https://cartilha.cert.br/" target="_blank" rel="noopener noreferrer">Cartilha de segurança</a>
+                </article>
+                <article class="help-card">
+                    <span class="help-icon" aria-hidden="true">⚖</span>
+                    <h2>Denúncia policial</h2>
+                    <p>Para registrar uma ocorrência, procure a Polícia Civil do seu estado ou uma delegacia especializada em crimes cibernéticos.</p>
+                    <a href="https://www.gov.br/pt-br/servicos" target="_blank" rel="noopener noreferrer">Encontrar serviços oficiais</a>
+                </article>
+            </div>
+            <p class="help-disclaimer">Não compartilhe códigos recebidos por SMS nem permita acesso remoto ao seu dispositivo com desconhecidos. Em caso de dúvida, encerre o contato e procure a instituição usando um canal oficial.</p>
+        </section>
+        </main>
+    </div>
+
+
+    <footer>
+
+         · Maratona Tech · 2026
+
+    </footer>
+
+
+    <script src="/static/app.js"></script>
+
+</body>
+
+</html>
